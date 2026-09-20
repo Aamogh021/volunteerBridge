@@ -1,8 +1,21 @@
 # 🌉 VolunteerBridge
 
-**AI-Powered Volunteer Coordination Platform for NGOs**
+**AI-Powered Volunteer Coordination Platform for NGOs & Crisis Management**
 
 VolunteerBridge uses Google Gemini AI and Supabase PostgreSQL to intelligently match volunteers to community needs during crisis situations. It automates survey intake, performs smart skill-based matching, provides real-time crisis intelligence, and syncs updates via Supabase Realtime — enabling NGOs to deploy the right volunteer to the right place at the right time.
+
+---
+
+## ✨ Key Features
+
+- **🛡️ Role-Based Views & Onboarding**: Custom dashboards for **NGO Admins**, **Volunteers**, and **Community Members** backed by Supabase Auth with Google OAuth integration.
+- **📄 AI-Powered Intake Processing**: Instantly extracts structured crisis needs and urgency scores from raw survey uploads and unstructured reports using Google Gemini.
+- **🗺️ Interactive Crisis Map**: Dynamic Leaflet map displaying real-time crisis markers, color-coded urgency levels, and location-based volunteer distance calculations.
+- **🎯 Smart AI Matchmaker**: Automated scoring algorithm pairing volunteers to crisis assignments based on skills, location proximity, transport mode, and availability.
+- **🔔 Real-Time Notification System**: Instant alerts and live updates via Supabase Realtime for urgent assignment dispatches and status changes.
+- **📊 AI Predictive Intelligence & Reports**: Automated generation of emergency response summaries, resource shortage predictions, and situational briefings.
+- **🤝 Buddy System & Micro-Teams**: Volunteer safety pairing and AI-assisted squad formation for complex or high-risk field operations.
+- **📱 Cross-Platform Mobile App**: Dedicated Flutter mobile application allowing field volunteers to track assignments, update status, and manage skills on the go.
 
 ---
 
@@ -15,14 +28,14 @@ VolunteerBridge uses Google Gemini AI and Supabase PostgreSQL to intelligently m
 │   Frontend    │      Backend         │     Mobile App           │
 │   (Next.js)   │     (FastAPI)        │     (Flutter)            │
 │               │                      │                          │
-│  Dashboard    │  /ingest             │  Task Feed               │
+│  Admin Dash   │  /ingest             │  Task Feed               │
 │  Crisis Map   │  /match              │  Task Details            │
 │  AI Reports   │  /assign             │  My Assignments          │
-│  Survey Upload│  /crisis-report      │  Profile Setup           │
+│  Survey Intake│  /crisis-report      │  Profile Setup           │
 ├───────────────┴──────────────────────┴──────────────────────────┤
 │                     Shared Services                              │
 │ Supabase Auth │ Supabase Postgres │ Supabase Realtime │ Gemini   │
-│             Google Maps │ FCM (Notifications)                      │
+│             Google Maps / Leaflet │ FCM (Notifications)          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -30,30 +43,17 @@ VolunteerBridge uses Google Gemini AI and Supabase PostgreSQL to intelligently m
 
 ## 🛠️ Tech Stack
 
-| Layer       | Technology                          | Purpose                          |
-|-------------|-------------------------------------|----------------------------------|
-| Frontend    | Next.js 14, TypeScript, Tailwind CSS| NGO Admin Dashboard              |
-| Backend     | Python 3.11, FastAPI, Pydantic v2   | API, AI Processing               |
-| Mobile      | Flutter 3.22, Dart, Riverpod        | Volunteer Mobile App             |
-| AI/ML       | Google Gemini                       | Survey extraction, matching, reports |
-| Database    | Supabase PostgreSQL                 | Relational data store            |
-| Realtime    | Supabase Realtime                   | Live updates for Needs & Volunteers |
-| Auth        | Supabase Auth                       | Google OAuth & Session Management|
-| Messaging   | Firebase Cloud Messaging (FCM)      | Push notifications               |
-| Maps        | Google Maps Platform                | Crisis mapping, geolocation      |
-| Hosting     | Google Cloud Run                    | Container deployment             |
-| CI/CD       | GitHub Actions                      | Automated deployment             |
-
----
-
-## 👥 Team Structure
-
-| Member           | Role              | Branch             | Ownership                  |
-|------------------|-------------------|---------------------|----------------------------|
-| Member 1         | Frontend Lead     | `frontend/main`     | `frontend/`                |
-| Member 2         | Backend Lead      | `backend/main`      | `backend/`                 |
-| Member 3         | Mobile Lead       | `flutter/main`      | `flutter-app/`             |
-| Member 4         | Integration Lead  | `integration/main`  | `.github/`, `README.md`    |
+| Layer       | Technology                          | Purpose                               |
+|-------------|-------------------------------------|---------------------------------------|
+| Frontend    | Next.js 14, TypeScript, Tailwind CSS| Admin & User Dashboards               |
+| Backend     | Python 3.11, FastAPI, Pydantic v2   | API, AI Matching & Intake Engine      |
+| Mobile      | Flutter 3.22, Dart, Riverpod        | Volunteer Mobile App                  |
+| AI/ML       | Google Gemini                       | Survey extraction, matching, analytics|
+| Database    | Supabase PostgreSQL                 | Relational data & vector storage      |
+| Realtime    | Supabase Realtime                   | Live updates for Needs & Assignments  |
+| Auth        | Supabase Auth                       | Google OAuth & Session Management     |
+| Messaging   | Firebase Cloud Messaging (FCM)      | Mobile push notifications             |
+| Maps        | Leaflet & Google Maps API           | Geolocation & crisis mapping          |
 
 ---
 
@@ -70,8 +70,8 @@ VolunteerBridge uses Google Gemini AI and Supabase PostgreSQL to intelligently m
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/volunteerbridge.git
-cd volunteerbridge
+git clone https://github.com/Aamogh021/volunteerBridge.git
+cd volunteerBridge
 ```
 
 ### 2. Backend Setup
@@ -79,13 +79,14 @@ cd volunteerbridge
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate    # On Windows: venv\Scripts\activate
+# Windows: venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
 pip install -r requirements.txt
 
 # Copy environment file and fill in your values
 cp .env.example .env
 
-# Start the server
+# Start the FastAPI server
 uvicorn main:app --reload --port 8000
 ```
 
@@ -107,7 +108,7 @@ npm run dev
 cd flutter-app
 flutter pub get
 
-# Configure Firebase/Supabase credentials
+# Configure credentials and launch mobile app
 flutter run
 ```
 
@@ -138,37 +139,10 @@ flutter run
 
 ---
 
-## 🌿 Branch Strategy
-
-```
-main                    ← production deployments
-├── frontend/main       ← frontend stable
-│   └── frontend/feat/* ← frontend feature branches
-├── backend/main        ← backend stable
-│   └── backend/feat/*  ← backend feature branches
-├── flutter/main        ← mobile stable
-│   └── flutter/feat/*  ← mobile feature branches
-└── integration/main    ← CI/CD and shared config
-```
-
-**Rules:**
-1. Never push directly to `main` — all changes via Pull Requests
-2. Each member works in their service-specific branch
-3. PRs require at least 1 approval before merge
-4. Integration Lead merges service branches into `main`
-
----
-
 ## 📄 License
 
-This project is built for the Google Solution Challenge 2026.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 🔗 Live Demo
-
-> **[Live Demo URL — Coming Soon](#)**
-
----
-
-*Built with ❤️ using Google AI & Supabase*
+*Built with ❤️ using Next.js, FastAPI, Flutter, Google Gemini AI & Supabase*
