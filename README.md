@@ -139,9 +139,7 @@ flutter run
 
 ---
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+Deployed Link will come soon!
 
 ---
 
